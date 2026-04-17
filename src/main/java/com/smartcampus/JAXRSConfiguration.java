@@ -13,7 +13,7 @@ import com.smartcampus.mapper.RoomNotEmptyExceptionMapper;
 import com.smartcampus.mapper.SensorUnavailableExceptionMapper;
 import com.smartcampus.resource.DebugResource;
 import com.smartcampus.resource.DiscoveryResource;
-import com.smartcampus.resource.RoomResource;
+import com.smartcampus.resource.SensorRoom;
 import com.smartcampus.resource.SensorReadingResource;
 import com.smartcampus.resource.SensorResource;
 import java.util.HashSet;
@@ -29,7 +29,7 @@ public class JAXRSConfiguration extends Application {
         Set<Class<?>> classes = new HashSet<>();
 
         classes.add(DiscoveryResource.class);
-        classes.add(RoomResource.class);
+        classes.add(SensorRoom.class);
         classes.add(SensorResource.class);
         classes.add(SensorReadingResource.class);
         classes.add(DebugResource.class);

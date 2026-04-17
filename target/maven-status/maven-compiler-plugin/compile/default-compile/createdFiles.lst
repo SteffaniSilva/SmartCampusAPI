@@ -1,5 +1,6 @@
 com\smartcampus\exception\RoomNotEmptyException.class
 com\smartcampus\mapper\GlobalExceptionMapper.class
+com\smartcampus\resource\SensorRoom.class
 com\smartcampus\store\DataStore.class
 com\smartcampus\model\Sensor.class
 com\smartcampus\exception\SensorUnavailableException.class
@@ -13,7 +14,6 @@ com\smartcampus\filter\ApiLoggingFilter.class
 com\smartcampus\mapper\SensorUnavailableExceptionMapper.class
 com\smartcampus\model\Room.class
 com\smartcampus\resource\DiscoveryResource.class
-com\smartcampus\resource\RoomResource.class
 com\smartcampus\JAXRSConfiguration.class
 com\smartcampus\model\SensorReading.class
 com\smartcampus\resource\SensorReadingResource.class
