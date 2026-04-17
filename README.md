@@ -171,7 +171,7 @@ curl -i http://localhost:8080/SmartCampusApi/api/v1/debug/crash
 
 ## Chapter 1: Setup & Discovery
 
-### 1. 1.	Explain the default lifecycle of a JAX-RS Resource class. Is a new instance instantiated for every incoming request, or does the runtime treat it as a singleton? Elaborate on how this architectural decision impacts the way you manage and synchronize your in-memory data structures (maps/lists) to prevent data loss or race conditions.
+### 1.	Explain the default lifecycle of a JAX-RS Resource class. Is a new instance instantiated for every incoming request, or does the runtime treat it as a singleton? Elaborate on how this architectural decision impacts the way you manage and synchronize your in-memory data structures (maps/lists) to prevent data loss or race conditions.
 
 • By default, JAX-RS resource classes follow a request-scoped lifecycle. This means the JAX-RS runtime (such as Jersey) instantiates a completely new instance of the resource class for every incoming HTTP request and discards it once the response is sent.
 
