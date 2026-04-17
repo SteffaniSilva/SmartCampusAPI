@@ -1,352 +1,290 @@
-# Smart Campus API
+# Smart Campus Sensor & Room Management API
 
-A JAX-RS coursework project for **5COSC022W Client-Server Architectures**.
-
----
-
-## 1. Project Overview
-
-This project implements a RESTful Smart Campus API for managing:
-
-* Rooms
-* Sensors
-* Sensor Readings
-
-The system allows users to:
-
-* manage rooms and sensors
-* track environmental data
-* enforce business rules using structured error handling
-
-Technologies used:
-
-* JAX-RS (Jersey)
-* Grizzly HTTP Server
-* Java in-memory collections (`ConcurrentHashMap`, `ArrayList`)
+**Student:** Steffani Silva  
+**Student ID:** w2120418  
+**Module:** 5COSC022W Client-Server Architectures  
 
 ---
 
-## 2. REST API Design
+## 📖 Overview
 
-The API follows REST principles by exposing **resources (nouns)** and interacting via **HTTP methods (verbs)**.
+The Smart Campus API is a RESTful web service developed using **JAX-RS** and **Jersey**. It is designed to support the university’s Smart Campus initiative by allowing facilities managers and automated systems to manage physical locations (**Rooms**), hardware devices (**Sensors**), and historical telemetry (**Sensor Readings**).
 
-### Core resources
+### Key Architectural Features
 
-* Room
-* Sensor
-* SensorReading
+- **Resource-Oriented Design:** A clear resource hierarchy based on real campus entities such as rooms and sensors.
+- **Versioned API Entry Point:** All endpoints are exposed under `/api/v1`.
+- **In-Memory Data Store:** Uses Java collections instead of a database, as required by the coursework.
+- **Sub-Resource Routing:** Supports nested endpoints such as `/sensors/{id}/readings`.
+- **Advanced Error Handling:** Custom exceptions are mapped to meaningful HTTP responses like `409`, `422`, `403`, and `500`.
+- **Global Logging:** Request and response logging is handled using JAX-RS filters.
 
-### Main endpoints
+### Main Resources
 
-* GET `/api/v1`
-* GET `/api/v1/rooms`
-* POST `/api/v1/rooms`
-* GET `/api/v1/rooms/{roomId}`
-* DELETE `/api/v1/rooms/{roomId}`
-* GET `/api/v1/sensors`
-* POST `/api/v1/sensors`
-* GET `/api/v1/sensors/{sensorId}`
-* GET `/api/v1/sensors/{sensorId}/readings`
-* POST `/api/v1/sensors/{sensorId}/readings`
-
----
-
-## 3. Architecture & Design Decisions
-
-### JAX-RS lifecycle
-
-Resource classes are request-scoped, meaning a new instance is created per request.
-To maintain shared data, the system uses a static `DataStore`.
+- `GET /api/v1`
+- `GET /api/v1/rooms`
+- `POST /api/v1/rooms`
+- `GET /api/v1/rooms/{roomId}`
+- `DELETE /api/v1/rooms/{roomId}`
+- `GET /api/v1/sensors`
+- `POST /api/v1/sensors`
+- `GET /api/v1/sensors/{sensorId}`
+- `GET /api/v1/sensors/{sensorId}/readings`
+- `POST /api/v1/sensors/{sensorId}/readings`
 
 ---
 
-### Data storage
+## 🛠 Technologies Used
 
-The API uses:
-
-* `ConcurrentHashMap` for rooms and sensors
-* thread-safe lists for readings
-
-This prevents race conditions and supports concurrent access.
+- Java
+- JAX-RS
+- Jersey
+- Apache Tomcat
+- Maven
+- Apache NetBeans
+- Postman
 
 ---
 
-### Resource hierarchy
+## 🚀 Build and Launch Instructions
 
-Sensor readings are modeled as a sub-resource:
+### Prerequisites
 
-```
-/sensors/{sensorId}/readings
+- JDK 17 or higher
+- Apache Maven
+- Apache Tomcat
+- Apache NetBeans (recommended)
+
+### Option 1: Run in NetBeans
+
+1. Open the project in **Apache NetBeans**.
+2. Make sure **Apache Tomcat** is selected as the server.
+3. Right-click the project and choose **Clean and Build**.
+4. Right-click the project and choose **Run**.
+5. Open the API discovery endpoint in the browser or Postman:
+
+```text
+http://localhost:8080/SmartCampusApi/api/v1
 ```
 
----
+### Option 2: Build with Maven and deploy manually
 
-### Separation of concerns
-
-The project separates:
-
-* resources (API endpoints)
-* models (data)
-* exception mappers (errors)
-* filters (logging)
-* datastore (shared state)
-
----
-
-## 4. Discovery Endpoint
-
-```
-GET /api/v1
-```
-
-Returns:
-
-```json
-{
-  "apiVersion": "v1",
-  "adminContact": "admin@smartcampus.ac.uk",
-  "resources": {
-    "rooms": "/api/v1/rooms",
-    "sensors": "/api/v1/sensors",
-    "sensorReadingsTemplate": "/api/v1/sensors/{sensorId}/readings"
-  }
-}
-```
-
-### Why useful
-
-Provides API navigation and reduces hardcoded endpoints.
-This reflects a simplified HATEOAS approach.
-
----
-
-## 5. Data Models
-
-### Room
-
-```java
-public class Room {
-    private String id;
-    private String name;
-    private int capacity;
-    private List<String> sensorIds;
-}
-```
-
-### Sensor
-
-```java
-public class Sensor {
-    private String id;
-    private String type;
-    private String status;
-    private double currentValue;
-    private String roomId;
-}
-```
-
-### SensorReading
-
-```java
-public class SensorReading {
-    private String id;
-    private long timestamp;
-    private double value;
-}
-```
-
----
-
-## 6. Error Handling
-
-The API uses ExceptionMapper classes to return structured JSON errors.
-
-### Error codes
-
-* 409 → room not empty
-* 422 → invalid room reference
-* 403 → sensor unavailable
-* 404 → not found
-* 500 → unexpected error
-
-### Example
-
-```json
-{
-  "status": 409,
-  "error": "Conflict",
-  "message": "Room contains sensors and cannot be deleted"
-}
-```
-
----
-
-## 7. Logging
-
-A filter logs:
-
-* HTTP method
-* request URI
-* response status
-
----
-
-## 8. Build & Run
-
-### Requirements
-
-* Java 17+
-* Maven
-
-### Run
+1. Open a terminal in the project folder.
+2. Run:
 
 ```bash
-mvn clean package
-mvn exec:java -Dexec.mainClass="org.example.Main"
+mvn clean install
 ```
 
-API URL:
+3. This will generate a `.war` file in the `target/` directory.
+4. Copy `SmartCampusApi.war` into the `webapps/` folder of Apache Tomcat.
+5. Start Tomcat.
+6. Open:
 
+```text
+http://localhost:8080/SmartCampusApi/api/v1
 ```
-http://localhost:8080/api/v1
-```
+
+> If the deployed context path is different on another machine, replace `SmartCampusApi` with the actual deployed application name.
 
 ---
 
-## 9. Sample curl Commands
+## 📡 Sample cURL Commands
 
-### Discovery
+### 1. View API discovery endpoint
 
 ```bash
-curl -i http://localhost:8080/api/v1
+curl -i http://localhost:8080/SmartCampusApi/api/v1
 ```
 
----
-
-### Create Room
+### 2. Get all rooms
 
 ```bash
-curl -i -X POST http://localhost:8080/api/v1/rooms \
+curl -i http://localhost:8080/SmartCampusApi/api/v1/rooms
+```
+
+### 3. Create a new room
+
+```bash
+curl -i -X POST http://localhost:8080/SmartCampusApi/api/v1/rooms \
 -H "Content-Type: application/json" \
--d '{
-"id":"ENG-201",
-"name":"Engineering Room",
-"capacity":50,
-"sensorIds":[]
-}'
+-d "{\"id\":\"ENG-101\",\"name\":\"Engineering Lab\",\"capacity\":40}"
 ```
 
----
-
-### Get Rooms
+### 4. Get a room by ID
 
 ```bash
-curl -i http://localhost:8080/api/v1/rooms
+curl -i http://localhost:8080/SmartCampusApi/api/v1/rooms/ENG-101
 ```
 
----
-
-### Get Room by ID
+### 5. Register a valid sensor
 
 ```bash
-curl -i http://localhost:8080/api/v1/rooms/ENG-201
-```
-
----
-
-### Create Sensor
-
-```bash
-curl -i -X POST http://localhost:8080/api/v1/sensors \
+curl -i -X POST http://localhost:8080/SmartCampusApi/api/v1/sensors \
 -H "Content-Type: application/json" \
--d '{
-"id":"TEMP-900",
-"type":"Temperature",
-"status":"ACTIVE",
-"currentValue":22.3,
-"roomId":"ENG-201"
-}'
+-d "{\"id\":\"CO2-001\",\"type\":\"CO2\",\"status\":\"ACTIVE\",\"currentValue\":400.0,\"roomId\":\"ENG-101\"}"
 ```
 
----
-
-### Filter Sensors
+### 6. Register an invalid sensor with a missing room reference
 
 ```bash
-curl -i "http://localhost:8080/api/v1/sensors?type=Temperature"
-```
-
----
-
-### Add Reading
-
-```bash
-curl -i -X POST http://localhost:8080/api/v1/sensors/TEMP-900/readings \
+curl -i -X POST http://localhost:8080/SmartCampusApi/api/v1/sensors \
 -H "Content-Type: application/json" \
--d '{
-"id":"READ-001",
-"timestamp":1710000000000,
-"value":23.8
-}'
+-d "{\"id\":\"CO2-999\",\"type\":\"CO2\",\"status\":\"ACTIVE\",\"currentValue\":410.0,\"roomId\":\"NO-ROOM\"}"
 ```
 
----
-
-### Get Readings
+### 7. Filter sensors by type
 
 ```bash
-curl -i http://localhost:8080/api/v1/sensors/TEMP-900/readings
+curl -i "http://localhost:8080/SmartCampusApi/api/v1/sensors?type=CO2"
 ```
 
----
-
-### Error Test (Invalid Room)
+### 8. Add a new reading to a sensor
 
 ```bash
-curl -i -X POST http://localhost:8080/api/v1/sensors \
+curl -i -X POST http://localhost:8080/SmartCampusApi/api/v1/sensors/CO2-001/readings \
 -H "Content-Type: application/json" \
--d '{
-"id":"TEMP-999",
-"type":"Temperature",
-"status":"ACTIVE",
-"currentValue":20.0,
-"roomId":"INVALID"
-}'
+-d "{\"value\":421.7}"
 ```
 
----
-
-### Error Test (Delete Room with Sensors)
+### 9. Get reading history for a sensor
 
 ```bash
-curl -i -X DELETE http://localhost:8080/api/v1/rooms/ENG-201
+curl -i http://localhost:8080/SmartCampusApi/api/v1/sensors/CO2-001/readings
+```
+
+### 10. Trigger a room deletion conflict
+
+```bash
+curl -i -X DELETE http://localhost:8080/SmartCampusApi/api/v1/rooms/ENG-101
+```
+
+### 11. Trigger the global 500 error mapper
+
+```bash
+curl -i http://localhost:8080/SmartCampusApi/api/v1/debug/crash
 ```
 
 ---
 
-## 10. Testing Summary
+# 📝 Conceptual Report Answers
 
-Tested:
+## Chapter 1: Setup & Discovery
 
-* endpoint functionality
-* resource creation
-* filtering
-* sub-resources
-* error handling
+### 1. Explain the default lifecycle of a JAX-RS Resource class. Is a new instance instantiated for every incoming request, or does the runtime treat it as a singleton? Elaborate on how this architectural decision impacts the way you manage and synchronize your in-memory data structures (maps/lists) to prevent data loss or race conditions.
+
+By default, JAX-RS resource classes follow a request-scoped lifecycle. This means the runtime usually creates a new instance of a resource class for each incoming HTTP request and discards it after the response is sent. The alternative is a singleton-style lifecycle, where one shared instance serves multiple requests.
+
+This design affects how in-memory data should be managed. Because request-scoped resource objects are recreated for every request, instance variables inside a resource class are not suitable for storing persistent shared data. Any data stored only inside the resource object would be lost after the request finishes.
+
+For this reason, shared application state is kept in a separate static `DataStore`. Since this store is accessed by multiple request threads concurrently, thread safety becomes important. `ConcurrentHashMap` is used for the main shared maps to reduce the risk of race conditions when requests add, update, or read Rooms and Sensors at the same time. Thread safety must also be considered for nested mutable collections such as lists of sensor IDs or sensor readings, because a thread-safe map does not automatically make the objects stored inside it thread-safe.
+
+Overall, the request-scoped lifecycle encourages stateless resource classes, while shared in-memory data must be placed in a separate shared structure and protected carefully to maintain consistency and prevent data corruption.
+
+### 2. Why is the provision of Hypermedia (links and navigation within responses) considered a hallmark of advanced RESTful design (HATEOAS)? How does this approach benefit client developers compared to static documentation?
+
+Hypermedia is considered a hallmark of advanced RESTful design because the server includes navigational links in its responses, allowing clients to discover available actions dynamically instead of relying entirely on hardcoded URLs or external documentation. This reduces coupling between client and server, makes the API more self-descriptive, and improves resilience if endpoint structures change over time.
+
+Compared with static documentation alone, hypermedia makes the API easier to explore and evolve because clients can follow links provided by the server rather than assuming fixed routes. In this project, the discovery endpoint demonstrates this idea in a simplified form by returning links for rooms and sensors.
 
 ---
 
-## 11. Limitations
+## Chapter 2: Room Management
 
-* in-memory storage (data resets)
-* no authentication
-* no database
+### 3. When returning a list of rooms, what are the implications of returning only IDs versus returning the full room objects? Consider network bandwidth and client-side processing.
+
+Returning only room IDs reduces payload size, saves bandwidth, and lowers serialization overhead on the server, which can be useful for very large collections. However, it pushes more work onto the client because the client must make additional requests to fetch the details for each room, increasing complexity and total network round trips.
+
+Returning full room objects increases payload size, but it is more convenient for clients because the required data is available immediately in one response. In this coursework, returning full room objects is more appropriate because the dataset is relatively small and it keeps the API simpler and easier to use.
+
+### 4. Is the DELETE operation idempotent in your implementation? Provide a detailed justification by describing what happens if a client mistakenly sends the exact same DELETE request for a room multiple times.
+
+Yes, the DELETE operation is idempotent. If a room exists and has no assigned sensors, the first DELETE request removes it successfully. If the exact same DELETE request is sent again, the room no longer exists, so the server returns a `404 Not Found`. Although the response codes differ between the first and later requests, the final state of the system is the same after every repeated request: the room does not exist.
+
+Because repeated identical requests do not create any additional side effects after the first successful deletion, the operation satisfies the definition of idempotency.
 
 ---
 
-## 12. Conclusion
+## Chapter 3: Sensors & Filtering
 
-This project demonstrates a RESTful API using JAX-RS, applying resource-based design, proper HTTP methods, structured error handling, and sub-resource architecture.
+### 5. We explicitly use the `@Consumes(MediaType.APPLICATION_JSON)` annotation on the POST method. Explain the technical consequences if a client attempts to send data in a different format, such as `text/plain` or `application/xml`. How does JAX-RS handle this mismatch?
 
+The `@Consumes(MediaType.APPLICATION_JSON)` annotation tells JAX-RS that the resource method only accepts request bodies in JSON format. If a client sends a different media type, such as `text/plain` or `application/xml`, the request does not match the method’s declared input type. In that situation, JAX-RS typically rejects the request before it reaches the resource method and returns HTTP `415 Unsupported Media Type`.
 
-## Demo Video
+This behavior enforces a clear API contract, prevents incompatible payloads from being processed, and avoids internal parsing errors caused by unsupported formats.
+
+### 6. You implemented this filtering using `@QueryParam`. Contrast this with an alternative design where the type is part of the URL path (e.g. `/api/v1/sensors/type/CO2`). Why is the query parameter approach generally considered superior for filtering and searching collections?
+
+Query parameters are generally superior for filtering and searching because they represent optional constraints on an existing collection rather than defining a completely different resource. The endpoint `/api/v1/sensors` still refers to the same sensor collection, while `?type=CO2` simply narrows the result set.
+
+This approach is more flexible, easier to extend with additional filters such as `?type=CO2&status=ACTIVE`, and aligns with common REST conventions for filtering, sorting, and pagination. In contrast, embedding filters inside the path makes the API more rigid and can lead to unnecessary endpoint variations for what is really just a search condition.
+
+---
+
+## Chapter 4: Sub-Resources
+
+### 7. Discuss the architectural benefits of the Sub-Resource Locator pattern. How does delegating logic to separate classes help manage complexity in large APIs compared to defining every nested path (e.g., `sensors/{id}/readings/{rid}`) in one massive controller class?
+
+The Sub-Resource Locator pattern improves modularity, separation of concerns, and maintainability by delegating nested functionality to dedicated classes. Instead of placing all sensor and reading logic inside one large controller, the main `SensorResource` can act as a router and delegate `/sensors/{id}/readings` requests to a separate `SensorReadingResource`.
+
+This keeps each class focused on a smaller responsibility, makes the code easier to read and test, and prevents the creation of a large monolithic controller. In larger APIs, this pattern helps control complexity and allows nested resources to evolve independently while still preserving a clear URI hierarchy.
+
+---
+
+## Chapter 5: Error Handling & Logging
+
+### 8. Why is HTTP 422 often considered more semantically accurate than a standard 404 when the issue is a missing reference inside a valid JSON payload?
+
+HTTP `422 Unprocessable Entity` is often more semantically accurate because the request itself is syntactically valid, the endpoint exists, and the JSON can be parsed correctly, but the server cannot process the request because one of the values inside it is logically invalid.
+
+In this coursework, posting a new sensor with a `roomId` that does not exist is not the same as requesting a missing URL resource, so returning `404 Not Found` would be less precise. Using `422` clearly communicates that the payload format was valid but the referenced dependency inside the payload could not be satisfied.
+
+### 9. From a cybersecurity standpoint, explain the risks associated with exposing internal Java stack traces to external API consumers. What specific information could an attacker gather from such a trace?
+
+Exposing internal Java stack traces is a cybersecurity risk because it leaks sensitive information about the application’s internal structure. An attacker could learn package names, class names, method names, file paths, framework details, library versions, database-related logic, and even the exact line of code where the failure occurred.
+
+This information can help an attacker map the architecture of the system, identify weak points, and craft more targeted exploits against known vulnerabilities. Returning sanitized JSON error responses instead of raw stack traces reduces information leakage and improves the overall security posture of the API.
+
+### 10. Why is it advantageous to use JAX-RS filters for cross-cutting concerns like logging, rather than manually inserting `Logger.info()` statements inside every single resource method?
+
+Using JAX-RS filters for logging is advantageous because logging is a cross-cutting concern that should apply consistently across many endpoints. A request/response filter allows the logging logic to be implemented once and automatically applied to every incoming request and outgoing response.
+
+This avoids duplication, keeps resource methods focused on business logic, and makes the system easier to maintain. If `Logger.info()` statements were inserted manually into every resource method, the code would become repetitive, harder to keep consistent, and easier to forget when adding new endpoints. Centralizing logging in filters is therefore cleaner, more scalable, and better aligned with separation of concerns.
+
+---
+
+## ✅ Video Demonstration Checklist
+
+The video demonstrates:
+
+- `GET /api/v1` discovery endpoint
+- `GET /rooms`
+- `POST /rooms`
+- `GET /rooms/{id}`
+- valid `POST /sensors`
+- invalid `POST /sensors` with missing `roomId` dependency
+- sensor filtering with `?type=...`
+- `POST /sensors/{id}/readings`
+- `GET /sensors/{id}/readings`
+- `403 Forbidden` for a maintenance sensor
+- `409 Conflict` for deleting a room with linked sensors
+- clean `500 Internal Server Error` with no stack trace exposed
+
+---
+
+## 🔗 GitHub Repository
+
+Public GitHub repository link:
+
+```text
+https://github.com/SteffaniSilva/SmartCampusAPI.git
+```
+
+---
+
+## Notes
+
+- This project only uses **JAX-RS**, as required by the coursework.
+- No database was used.
+- All data is stored in memory using Java collections.
+- The API was tested using Postman.
