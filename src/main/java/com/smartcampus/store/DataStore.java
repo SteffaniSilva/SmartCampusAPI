@@ -22,11 +22,6 @@ public class DataStore {
     public static final Map<String, Sensor> SENSORS = new ConcurrentHashMap<>();
     public static final Map<String, List<SensorReading>> READINGS = new ConcurrentHashMap<>();
 
-    static {
-        Room room1 = new Room("LIB-301", "Library Quiet Study", 80);
-        ROOMS.put(room1.getId(), room1);
-    }
-
     private DataStore() {
     }
 
