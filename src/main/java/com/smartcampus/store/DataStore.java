@@ -25,10 +25,7 @@ public class DataStore {
     private DataStore() {
     }
 
-    public static List<SensorReading> getReadingsForSensor(String sensorId) {
-        if (!READINGS.containsKey(sensorId)) {
-            READINGS.put(sensorId, new ArrayList<>());
-        }
-        return READINGS.get(sensorId);
-    }
+public static List<SensorReading> getReadingsForSensor(String sensorId) {
+    return READINGS.computeIfAbsent(sensorId, k -> new ArrayList<>());
+}
 }

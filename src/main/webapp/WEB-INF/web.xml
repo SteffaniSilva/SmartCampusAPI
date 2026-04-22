@@ -14,9 +14,9 @@
         <load-on-startup>1</load-on-startup>
     </servlet>
 
-    <servlet-mapping>
-        <servlet-name>JerseyWebApplication</servlet-name>
-        <url-pattern>/api/v1/*</url-pattern>
-    </servlet-mapping>
+<servlet-mapping>
+    <servlet-name>JerseyWebApplication</servlet-name>
+    <url-pattern>/api/v1/*</url-pattern>
+</servlet-mapping>
 
 </web-app>

@@ -1,7 +1,4 @@
 package com.smartcampus;
-
-
-
 /**
  * Configures JAX-RS for the application.
  * @author Juneau
@@ -21,7 +18,7 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
-@ApplicationPath("/")
+@ApplicationPath("/api/v1")
 public class JAXRSConfiguration extends Application {
 
     @Override
